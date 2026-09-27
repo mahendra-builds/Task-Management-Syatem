@@ -10,6 +10,7 @@ import { env } from './config/env';
 import { errorHandler } from './middleware/errorHandler';
 import { notFoundHandler } from './middleware/notFoundHandler';
 import apiRoutes from './routes';
+import docsRoutes from './routes/docs.routes';
 
 export const createApp = (): Application => {
   const app = express();
@@ -59,6 +60,8 @@ export const createApp = (): Application => {
   });
 
   app.use('/api', apiRoutes);
+
+  app.use('/api/docs', docsRoutes);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
