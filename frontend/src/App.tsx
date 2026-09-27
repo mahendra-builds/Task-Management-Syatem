@@ -1,6 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AppLayout } from './layouts/AppLayout';
 import { ProtectedRoute } from './routes/ProtectedRoute';
+import { RoleGuard } from './routes/RoleGuard';
+import { Role } from './types';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -42,9 +44,30 @@ export default function App() {
         <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/admin/users" element={<AdminUsersPage />} />
-        <Route path="/admin/projects" element={<AdminProjectsPage />} />
-        <Route path="/admin/tasks" element={<AdminTasksPage />} />
+        <Route
+          path="/admin/users"
+          element={
+            <RoleGuard roles={[Role.ADMIN]}>
+              <AdminUsersPage />
+            </RoleGuard>
+          }
+        />
+        <Route
+          path="/admin/projects"
+          element={
+            <RoleGuard roles={[Role.ADMIN]}>
+              <AdminProjectsPage />
+            </RoleGuard>
+          }
+        />
+        <Route
+          path="/admin/tasks"
+          element={
+            <RoleGuard roles={[Role.ADMIN]}>
+              <AdminTasksPage />
+            </RoleGuard>
+          }
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
