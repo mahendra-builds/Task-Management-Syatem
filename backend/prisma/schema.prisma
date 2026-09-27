@@ -1,5 +1,5 @@
-// This is a minimal Phase 1 starter schema.
-// It will be expanded in Phase 1 with projects, tasks, comments, etc.
+// Task Management System — Prisma schema
+// MySQL-backed. Tables map directly to the project's 7 entities.
 
 generator client {
   provider = "prisma-client-js"
@@ -10,11 +10,72 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ──────────────────────────────────────────────────────────────────
+// Enums
+// ──────────────────────────────────────────────────────────────────
+
 enum Role {
   ADMIN
   MANAGER
   MEMBER
 }
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum ProjectMemberRole {
+  OWNER
+  MANAGER
+  MEMBER
+  VIEWER
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  COMPLETED
+  BLOCKED
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum NotificationType {
+  TASK_ASSIGNED
+  TASK_UPDATED
+  TASK_COMMENTED
+  TASK_DUE_SOON
+  TASK_COMPLETED
+}
+
+enum ActivityAction {
+  TASK_CREATED
+  TASK_ASSIGNED
+  TASK_STATUS_CHANGED
+  TASK_PRIORITY_CHANGED
+  TASK_COMPLETED
+  TASK_COMMENTED
+  TASK_DELETED
+  PROJECT_CREATED
+  PROJECT_UPDATED
+  PROJECT_MEMBER_ADDED
+  PROJECT_MEMBER_REMOVED
+  USER_CREATED
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Users
+// ──────────────────────────────────────────────────────────────────
 
 model User {
   id        String   @id @default(cuid())
@@ -27,5 +88,165 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  ownedProjects     Project[]         @relation("ProjectOwner")
+  projectMemberships ProjectMember[]
+  tasksAssigned     Task[]            @relation("TaskAssignee")
+  tasksCreated      Task[]            @relation("TaskCreator")
+  comments          Comment[]
+  notifications     Notification[]
+  activityLogs      ActivityLog[]     @relation("ActivityActor")
+  refreshTokens     RefreshToken[]
+
+  @@index([role])
+  @@index([isActive])
   @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String   @map("user_id")
+  expiresAt DateTime @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Projects
+// ──────────────────────────────────────────────────────────────────
+
+model Project {
+  id          String        @id @default(cuid())
+  name        String
+  description String?       @db.Text
+  status      ProjectStatus @default(PLANNING)
+  ownerId     String        @map("owner_id")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  owner      User           @relation("ProjectOwner", fields: [ownerId], references: [id])
+  members    ProjectMember[]
+  tasks      Task[]
+  activities ActivityLog[]  @relation("ActivityProject")
+
+  @@index([ownerId])
+  @@index([status])
+  @@map("projects")
+}
+
+model ProjectMember {
+  id        String            @id @default(cuid())
+  projectId String            @map("project_id")
+  userId    String            @map("user_id")
+  role      ProjectMemberRole @default(MEMBER)
+  joinedAt  DateTime          @default(now()) @map("joined_at")
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@index([userId])
+  @@map("project_members")
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Tasks
+// ──────────────────────────────────────────────────────────────────
+
+model Task {
+  id           String       @id @default(cuid())
+  title        String
+  description  String?      @db.Text
+  projectId    String       @map("project_id")
+  createdById  String       @map("created_by_id")
+  assignedToId String?      @map("assigned_to_id")
+  status       TaskStatus   @default(TODO)
+  priority     TaskPriority @default(MEDIUM)
+  dueDate      DateTime?    @map("due_date")
+  completedAt  DateTime?    @map("completed_at")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  project    Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdBy  User        @relation("TaskCreator", fields: [createdById], references: [id])
+  assignedTo User?       @relation("TaskAssignee", fields: [assignedToId], references: [id])
+  comments   Comment[]
+  activities ActivityLog[] @relation("ActivityTask")
+
+  @@index([projectId])
+  @@index([assignedToId])
+  @@index([createdById])
+  @@index([status])
+  @@index([priority])
+  @@index([dueDate])
+  @@map("tasks")
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Comments
+// ──────────────────────────────────────────────────────────────────
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  taskId    String   @map("task_id")
+  authorId  String   @map("author_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id])
+
+  @@index([taskId])
+  @@index([authorId])
+  @@map("comments")
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Notifications
+// ──────────────────────────────────────────────────────────────────
+
+model Notification {
+  id        String           @id @default(cuid())
+  type      NotificationType
+  message   String
+  userId    String           @map("user_id")
+  link      String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Activity Logs
+// ──────────────────────────────────────────────────────────────────
+
+model ActivityLog {
+  id        String        @id @default(cuid())
+  action    ActivityAction
+  actorId   String        @map("actor_id")
+  projectId String?       @map("project_id")
+  taskId    String?       @map("task_id")
+  metadata  Json?
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  actor   User     @relation("ActivityActor", fields: [actorId], references: [id])
+  project Project? @relation("ActivityProject", fields: [projectId], references: [id], onDelete: Cascade)
+  task    Task?    @relation("ActivityTask", fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([actorId])
+  @@index([projectId])
+  @@index([taskId])
+  @@index([createdAt])
+  @@map("activity_logs")
 }
