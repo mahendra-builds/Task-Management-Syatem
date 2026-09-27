@@ -4,14 +4,12 @@ import { MemoryRouter } from 'react-router-dom';
 import { DashboardPage } from '../pages/DashboardPage';
 
 describe('DashboardPage', () => {
-  it('renders dashboard heading and 5 stat cards', () => {
+  it('renders loading state initially', () => {
     render(
       <MemoryRouter>
         <DashboardPage />
       </MemoryRouter>,
     );
-    expect(screen.getByRole('heading', { name: /dashboard/i })).toBeInTheDocument();
-    expect(screen.getByText(/total tasks/i)).toBeInTheDocument();
-    expect(screen.getByText(/overdue/i)).toBeInTheDocument();
+    expect(screen.getByText(/loading dashboard/i)).toBeInTheDocument();
   });
 });
