@@ -13,6 +13,7 @@ const items = [
 ];
 
 const adminItems = [
+  { to: '/admin', label: 'Admin · Overview', icon: '🛡️' },
   { to: '/admin/users', label: 'Admin · Users', icon: '🛡️' },
   { to: '/admin/projects', label: 'Admin · Projects', icon: '🛡️' },
   { to: '/admin/tasks', label: 'Admin · Tasks', icon: '🛡️' },
