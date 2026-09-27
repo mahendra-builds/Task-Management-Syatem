@@ -53,3 +53,10 @@ backend/prisma/*.db-journal
 .parcel-cache/
 .eslintcache
 .prettiercache
+
+# Frontend tsc -b build artifacts
+frontend/*.d.ts
+frontend/*.js
+!frontend/vite.config.ts
+!frontend/postcss.config.js
+!frontend/tailwind.config.js
