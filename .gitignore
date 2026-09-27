@@ -54,9 +54,10 @@ backend/prisma/*.db-journal
 .eslintcache
 .prettiercache
 
-# Frontend tsc -b build artifacts
+# Frontend tsc -b build artifacts (only generated *.d.ts and tsc-emitted *.js)
 frontend/*.d.ts
-frontend/*.js
-!frontend/vite.config.ts
+frontend/vite.config.js
+frontend/tsconfig*.tsbuildinfo
+# Allow real config files even though they end in .js
 !frontend/postcss.config.js
 !frontend/tailwind.config.js

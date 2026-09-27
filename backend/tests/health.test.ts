@@ -1,8 +1,17 @@
 import request from 'supertest';
 import { createApp } from '../src/app';
+import { prisma } from '../src/config/prisma';
 
 describe('Health endpoint', () => {
   const app = createApp();
+
+  afterAll(async () => {
+    try {
+      await prisma.$disconnect();
+    } catch {
+      // ignore
+    }
+  });
 
   it('GET /health returns 200 and ok', async () => {
     const res = await request(app).get('/health');

@@ -6,7 +6,7 @@
   "description": "Task Management System client",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "NODE_OPTIONS='--max-old-space-size=8192' tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
