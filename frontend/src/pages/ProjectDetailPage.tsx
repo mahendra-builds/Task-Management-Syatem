@@ -5,6 +5,7 @@ import { ProjectStatus, ProjectMemberRole } from '../types';
 import { useProjectStore } from '../store/projectStore';
 import { useUserStore } from '../store/userStore';
 import { useAuthStore } from '../store/authStore';
+import { ActivitySection } from '../components/ActivitySection';
 import { getApiErrorMessage } from '../utils/errors';
 
 const statusBadge: Record<ProjectStatus, string> = {
@@ -235,6 +236,8 @@ export function ProjectDetailPage() {
           </form>
         </div>
       )}
+
+      <ActivitySection projectId={project.id} />
     </div>
   );
 }

@@ -5,6 +5,8 @@ import { TaskStatus, TaskPriority } from '../types';
 import { useTaskStore } from '../store/taskStore';
 import { useUserStore } from '../store/userStore';
 import { useAuthStore } from '../store/authStore';
+import { CommentsSection } from '../components/CommentsSection';
+import { ActivitySection } from '../components/ActivitySection';
 import { getApiErrorMessage } from '../utils/errors';
 
 const statusBadge: Record<TaskStatus, string> = {
@@ -174,6 +176,13 @@ export function TaskDetailPage() {
             <button onClick={onDelete} className="btn-secondary text-red-600">Delete</button>
           )}
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <CommentsSection taskId={task.id} />
+        </div>
+        <ActivitySection taskId={task.id} />
       </div>
 
       {editing && (
