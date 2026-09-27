@@ -7,6 +7,7 @@ import taskRoutes from './task.routes';
 import dashboardRoutes from './dashboard.routes';
 import commentRoutes from './comment.routes';
 import notificationRoutes from './notification.routes';
+import adminRoutes from './admin.routes';
 
 const apiRoutes = Router();
 
@@ -18,8 +19,6 @@ apiRoutes.use('/tasks', taskRoutes);
 apiRoutes.use('/dashboard', dashboardRoutes);
 apiRoutes.use('/', commentRoutes);
 apiRoutes.use('/notifications', notificationRoutes);
-
-// Phase 10+ feature routes get mounted here:
-// apiRoutes.use('/admin', adminRoutes);
+apiRoutes.use('/admin', adminRoutes);
 
 export default apiRoutes;

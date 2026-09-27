@@ -18,6 +18,7 @@ import { SettingsPage } from './pages/SettingsPage';
 import { AdminUsersPage } from './pages/AdminUsersPage';
 import { AdminProjectsPage } from './pages/AdminProjectsPage';
 import { AdminTasksPage } from './pages/AdminTasksPage';
+import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 export default function App() {
@@ -44,6 +45,14 @@ export default function App() {
         <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route
+          path="/admin"
+          element={
+            <RoleGuard roles={[Role.ADMIN]}>
+              <AdminDashboardPage />
+            </RoleGuard>
+          }
+        />
         <Route
           path="/admin/users"
           element={
