@@ -43,6 +43,8 @@ coverage/
 backend/prisma/migrations/dev.db*
 backend/prisma/*.db
 backend/prisma/*.db-journal
+backend/prisma/seed.js
+backend/prisma/seed.js.map
 
 # Docker
 .dockerignore.bak
