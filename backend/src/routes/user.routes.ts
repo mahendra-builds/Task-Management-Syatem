@@ -63,7 +63,7 @@ router.post('/me/password', validate(changePasswordSchema), userController.chang
  *       200: { description: OK }
  *       404: { description: Not found }
  */
-router.get('/:id', validate(idParamSchema), userController.getOne);
+router.get('/:id', validate(idParamSchema, 'params'), userController.getOne);
 
 /**
  * @openapi
@@ -80,7 +80,7 @@ router.get('/:id', validate(idParamSchema), userController.getOne);
 router.patch(
   '/:id',
   requireRole(Role.ADMIN),
-  validate(idParamSchema),
+  validate(idParamSchema, 'params'),
   validate(adminUpdateUserSchema),
   userController.adminUpdate,
 );
@@ -100,7 +100,7 @@ router.patch(
 router.delete(
   '/:id',
   requireRole(Role.ADMIN),
-  validate(idParamSchema),
+  validate(idParamSchema, 'params'),
   userController.adminDelete,
 );
 
