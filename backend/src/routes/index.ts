@@ -4,6 +4,7 @@ import authRoutes from './auth.routes';
 import userRoutes from './user.routes';
 import projectRoutes from './project.routes';
 import taskRoutes from './task.routes';
+import dashboardRoutes from './dashboard.routes';
 
 const apiRoutes = Router();
 
@@ -12,8 +13,9 @@ apiRoutes.use('/auth', authRoutes);
 apiRoutes.use('/users', userRoutes);
 apiRoutes.use('/projects', projectRoutes);
 apiRoutes.use('/tasks', taskRoutes);
+apiRoutes.use('/dashboard', dashboardRoutes);
 
-// Phase 6+ feature routes get mounted here:
+// Phase 7+ feature routes get mounted here:
 // apiRoutes.use('/comments', commentRoutes);
 // apiRoutes.use('/notifications', notificationRoutes);
 // apiRoutes.use('/admin', adminRoutes);
