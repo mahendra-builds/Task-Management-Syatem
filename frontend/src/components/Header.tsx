@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { NotificationBell } from './NotificationBell';
 
 export function Header() {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ export function Header() {
         </Link>
       </div>
       <div className="flex items-center gap-3">
+        <NotificationBell />
         {user && (
           <span className="text-sm text-slate-600">
             {user.name}{' '}
