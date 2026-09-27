@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# IDE / editor
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.swp
+*.swo
+.DS_Store
+
+# Testing
+coverage/
+.nyc_output/
+
+# Prisma
+backend/prisma/migrations/dev.db*
+backend/prisma/*.db
+backend/prisma/*.db-journal
+
+# Docker
+.dockerignore.bak
+
+# Misc
+*.tsbuildinfo
+.cache/
+.parcel-cache/
+.eslintcache
+.prettiercache
+
+# Frontend tsc -b build artifacts
+frontend/*.d.ts
+frontend/*.js
+!frontend/vite.config.ts
+!frontend/postcss.config.js
+!frontend/tailwind.config.js
